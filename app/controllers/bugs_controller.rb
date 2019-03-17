@@ -1,8 +1,9 @@
 class BugsController < ApplicationController
+  before_action :set_users_and_states, only: [:new, :create] # Before new and create action set the @users, @states
+
   def index
     @bugs = Bug.all
     puts @bugs
-
   end
 
   def show
@@ -11,21 +12,19 @@ class BugsController < ApplicationController
 
   def new
     @bug = Bug.new
-    @users = User.all
-    @states = Bug.states
   end
 
   def create
     @bug = Bug.create(bug_params)
-   
+
     respond_to do |format|
       if @bug.persisted?
-        format.html { redirect_to bugs_path, notice: 'Bug was successfully created.' }
+        format.html {redirect_to bugs_path, notice: 'Bug was successfully created.'}
       else
-        format.html { render :new }
+        format.html {render :new}
       end
     end
-   end
+  end
 
   def edit
     @bug = Bug.find(params[:id])
@@ -43,7 +42,7 @@ class BugsController < ApplicationController
   def destroy
     @bug = Bug.find(params[:id])
     @bug.destroy
-    
+
     redirect_to bugs_path
   end
 
@@ -53,6 +52,9 @@ class BugsController < ApplicationController
     params.require(:bug).permit(:owner, :title, :description, :assignate, :state)
   end
 
-  
+  def set_users_and_states
+    @users = User.all
+    @states = Bug.states
+  end
 
 end
